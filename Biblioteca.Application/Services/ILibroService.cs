@@ -1,13 +1,13 @@
-﻿using Biblioteca.Application.DTOs;
+﻿using Biblioteca.Application.DTOs.Libros;
 
 namespace Biblioteca.Application.Services
 {
     public interface ILibroService
     {
-        Task<IEnumerable<LibroResponseDto>> ListarLibrosAsync();
-        Task<LibroResponseDto> RegistrarLibroAsync(LibroCreateDto nuevoLibro);
-        Task<LibroResponseDto?> BuscarLibroPorIdAsync(int libroId);
-        Task<bool> ModificarDatosLibroAsync(int libroId, LibroCreateDto datosNuevos);
+        Task<IEnumerable<LibroDto>> ListarLibrosAsync();
+        Task<LibroDto?> BuscarLibroPorIdAsync(int libroId);
+        Task<LibroDto> RegistrarLibroAsync(CreateLibroDto nuevoLibro);
+        Task<bool> ModificarDatosLibroAsync(int libroId, UpdateLibroDto datosNuevos);
         Task<bool> BorrarLibroAsync(int libroId);
     }
 }

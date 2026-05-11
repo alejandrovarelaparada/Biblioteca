@@ -7,39 +7,39 @@ namespace Biblioteca.Infrastructure.Repositories
 {
     public class AutorRepository : IAutorRepository
     {
-        private readonly BibliotecaDbContext _context;
+        private readonly BibliotecaDbContext _bibliotecaDbContext;
 
-        public AutorRepository(BibliotecaDbContext context)
+        public AutorRepository(BibliotecaDbContext bibliotecaDbContext)
         {
-            _context = context;
+            _bibliotecaDbContext = bibliotecaDbContext;
         }
 
         public async Task<IEnumerable<Autor>> ObtenerAutoresAsync()
         {
-            return await _context.Autores.ToListAsync();
+            return await _bibliotecaDbContext.Autores.ToListAsync();
         }
 
         public async Task<Autor?> ObtenerAutorPorIdAsync(int autorId)
         {
-            return await _context.Autores.FirstOrDefaultAsync(a => a.Id == autorId);
+            return await _bibliotecaDbContext.Autores.FirstOrDefaultAsync(a => a.Id == autorId);
         }
 
         public async Task InsertarNuevoAutorAsync(Autor autor)
         {
-            await _context.Autores.AddAsync(autor);
-            await _context.SaveChangesAsync();
+            await _bibliotecaDbContext.Autores.AddAsync(autor);
+            await _bibliotecaDbContext.SaveChangesAsync();
         }
 
         public async Task ActualizarAutorAsync(Autor autorExistente)
         {
-            _context.Autores.Update(autorExistente);
-            await _context.SaveChangesAsync();
+            _bibliotecaDbContext.Autores.Update(autorExistente);
+            await _bibliotecaDbContext.SaveChangesAsync();
         }
 
         public async Task EliminarAutorAsync(Autor autorAEliminar)
         {
-            _context.Autores.Remove(autorAEliminar);
-            await _context.SaveChangesAsync();
+            _bibliotecaDbContext.Autores.Remove(autorAEliminar);
+            await _bibliotecaDbContext.SaveChangesAsync();
         }
     }
 }

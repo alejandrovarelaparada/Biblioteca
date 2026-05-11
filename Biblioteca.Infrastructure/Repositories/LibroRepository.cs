@@ -7,39 +7,39 @@ namespace Biblioteca.Infrastructure.Repositories
 {
     public class LibroRepository : ILibroRepository
     {
-        private readonly BibliotecaDbContext _context;
+        private readonly BibliotecaDbContext _bibliotecaDbContext;
 
-        public LibroRepository(BibliotecaDbContext context)
+        public LibroRepository(BibliotecaDbContext bibliotecaDbContext)
         {
-            _context = context;
+            _bibliotecaDbContext = bibliotecaDbContext;
         }
 
         public async Task<IEnumerable<Libro>> ObtenerLibrosAsync()
         {
-            return await _context.Libros.Include(l => l.Autor).ToListAsync();
+            return await _bibliotecaDbContext.Libros.Include(l => l.Autor).ToListAsync();
         }
 
         public async Task<Libro?> ObtenerLibroPorIdAsync(int libroId)
         {
-            return await _context.Libros.Include(l => l.Autor).FirstOrDefaultAsync(l => l.Id == libroId);
+            return await _bibliotecaDbContext.Libros.Include(l => l.Autor).FirstOrDefaultAsync(l => l.Id == libroId);
         }
 
         public async Task InsertarNuevoLibroAsync(Libro libro)
         {
-            await _context.Libros.AddAsync(libro);
-            await _context.SaveChangesAsync();
+            await _bibliotecaDbContext.Libros.AddAsync(libro);
+            await _bibliotecaDbContext.SaveChangesAsync();
         }
 
         public async Task ActualizarLibroAsync(Libro libroExistente)
         {
-            _context.Libros.Update(libroExistente);
-            await _context.SaveChangesAsync();
+            _bibliotecaDbContext.Libros.Update(libroExistente);
+            await _bibliotecaDbContext.SaveChangesAsync();
         }
 
         public async Task EliminarLibroAsync(Libro libroAEliminar)
         {
-            _context.Libros.Remove(libroAEliminar);
-            await _context.SaveChangesAsync();
+            _bibliotecaDbContext.Libros.Remove(libroAEliminar);
+            await _bibliotecaDbContext.SaveChangesAsync();
         }
     }
 }

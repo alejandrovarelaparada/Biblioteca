@@ -1,4 +1,4 @@
-﻿using Biblioteca.Application.DTOs;
+﻿using Biblioteca.Application.DTOs.Autores;
 using Biblioteca.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,21 +16,14 @@ namespace Biblioteca.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AutorResponseDto>>> ObtenerAutores()
+        public async Task<ActionResult<IEnumerable<AutorDto>>> ObtenerAutores()
         {
             var autores = await _autorService.ListarAutoresAsync();
             return Ok(autores);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AutorResponseDto>> CrearAutor(AutorCreateDto autorCreado)
-        {
-            var nuevoAutor = await _autorService.RegistrarAutorAsync(autorCreado);
-            return CreatedAtAction(nameof(ObtenerAutores), new { id = nuevoAutor.AutorId }, nuevoAutor);
-        }
-
         [HttpGet("{autorId}")]
-        public async Task<ActionResult<AutorResponseDto>> ObtenerAutorPorId(int autorId)
+        public async Task<ActionResult<AutorDto>> ObtenerAutorPorId(int autorId)
         {
             var autor = await _autorService.BuscarAutorPorIdAsync(autorId);
             if (autor == null) return NotFound($"No se encontró el autor con ID {autorId}");
@@ -38,8 +31,15 @@ namespace Biblioteca.API.Controllers
             return Ok(autor);
         }
 
+        [HttpPost]
+        public async Task<ActionResult<AutorDto>> CrearAutor(CreateAutorDto autorCreado)
+        {
+            var nuevoAutor = await _autorService.RegistrarAutorAsync(autorCreado);
+            return CreatedAtAction(nameof(ObtenerAutores), new { id = nuevoAutor.AutorId }, nuevoAutor);
+        }
+
         [HttpPut("{autorId}")]
-        public async Task<IActionResult> ActualizarAutor(int autorId, AutorCreateDto datosActualizados)
+        public async Task<IActionResult> ActualizarAutor(int autorId, UpdateAutorDto datosActualizados)
         {
             var autorActualizado = await _autorService.ModificarDatosAutorAsync(autorId, datosActualizados);
             if (!autorActualizado) return NotFound($"No se pudo actualizar porque el autor no existe");

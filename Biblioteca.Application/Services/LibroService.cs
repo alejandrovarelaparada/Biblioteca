@@ -1,4 +1,4 @@
-﻿using Biblioteca.Application.DTOs;
+﻿using Biblioteca.Application.DTOs.Libros;
 using Biblioteca.Domain.Entities;
 using Biblioteca.Domain.Interfaces;
 
@@ -13,21 +13,37 @@ namespace Biblioteca.Application.Services
             _libroRepository = libroRepository;
         }
 
-        public async Task<IEnumerable<LibroResponseDto>> ListarLibrosAsync()
+        public async Task<IEnumerable<LibroDto>> ListarLibrosAsync()
         {
             var libros = await _libroRepository.ObtenerLibrosAsync();
 
-            return libros.Select(libro => new LibroResponseDto
-            {
-                LibroId = libro.Id,
-                Titulo = libro.Titulo,
-                Sinopsis = libro.Sinopsis,
-                AutorId = libro.AutorId,
-                NombreAutor = libro.Autor?.Nombre ?? "Autor Desconocido"
-            });
+            return libros.Select(libro => new LibroDto(
+                libro.Id,
+                libro.Titulo,
+                libro.Sinopsis,
+                libro.AutorId,
+                libro.Autor?.Nombre ?? "Autor desconocido"));
         }
 
-        public async Task<LibroResponseDto> RegistrarLibroAsync(LibroCreateDto libroCreado)
+        public async Task<LibroDto?> BuscarLibroPorIdAsync(int libroId)
+        {
+            var libro = await _libroRepository.ObtenerLibroPorIdAsync(libroId);
+            LibroDto? libroEncontrado = null;
+
+            if (libro != null)
+            {
+                libroEncontrado = new LibroDto(
+                    libro.Id, 
+                    libro.Titulo, 
+                    libro.Sinopsis,
+                    libro.AutorId,
+                    libro.Autor?.Nombre ?? "Autor desconocido");
+            }
+
+            return libroEncontrado;
+        }
+
+        public async Task<LibroDto> RegistrarLibroAsync(CreateLibroDto libroCreado)
         {
             var nuevoLibro = new Libro
             {
@@ -38,36 +54,10 @@ namespace Biblioteca.Application.Services
 
             await _libroRepository.InsertarNuevoLibroAsync(nuevoLibro);
 
-            return new LibroResponseDto
-            {
-                LibroId = nuevoLibro.Id,
-                Titulo = nuevoLibro.Titulo,
-                Sinopsis = nuevoLibro.Sinopsis,
-                AutorId = nuevoLibro.AutorId,
-                NombreAutor = nuevoLibro.Autor?.Nombre ?? "Autor Desconocido"
-            };
+            return new LibroDto(nuevoLibro.Id, nuevoLibro.Titulo, nuevoLibro.Sinopsis, nuevoLibro.AutorId, nuevoLibro.Autor?.Nombre ?? "Autor desconocido");
         }
 
-        public async Task<LibroResponseDto?> BuscarLibroPorIdAsync(int libroId)
-        {
-            var libro = await _libroRepository.ObtenerLibroPorIdAsync(libroId);
-            LibroResponseDto? libroEncontrado = null;
-
-            if (libro != null)
-            {
-                libroEncontrado = new LibroResponseDto
-                {
-                    LibroId = libro.Id,
-                    Titulo = libro.Titulo,
-                    Sinopsis = libro.Sinopsis,
-                    NombreAutor = libro.Autor?.Nombre ?? "Desconocido"
-                };
-            }
-
-            return libroEncontrado;
-        }
-
-        public async Task<bool> ModificarDatosLibroAsync(int libroId, LibroCreateDto datosNuevos)
+        public async Task<bool> ModificarDatosLibroAsync(int libroId, UpdateLibroDto datosNuevos)
         {
             var libroExistente = await _libroRepository.ObtenerLibroPorIdAsync(libroId);
             bool modificado = false;

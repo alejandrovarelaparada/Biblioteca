@@ -16,6 +16,9 @@ builder.Services.AddScoped<ILibroService, LibroService>();
 builder.Services.AddScoped<IAutorRepository, AutorRepository>();
 builder.Services.AddScoped<IAutorService, AutorService>();
 
+builder.Services.AddScoped<IEjemplarRepository, EjemplarRepository>();
+builder.Services.AddScoped<IEjemplarService, EjemplarService>();
+
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();

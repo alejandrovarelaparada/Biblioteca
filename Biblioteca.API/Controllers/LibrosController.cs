@@ -1,4 +1,4 @@
-﻿using Biblioteca.Application.DTOs;
+﻿using Biblioteca.Application.DTOs.Libros;
 using Biblioteca.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,21 +16,21 @@ namespace Biblioteca.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LibroResponseDto>>> ObtenerLibros()
+        public async Task<ActionResult<IEnumerable<LibroDto>>> ObtenerLibros()
         {
             var libros = await _libroService.ListarLibrosAsync();
             return Ok(libros);
         }
 
         [HttpPost]
-        public async Task<ActionResult<LibroResponseDto>> CrearLibro(LibroCreateDto libroCreado)
+        public async Task<ActionResult<LibroDto>> CrearLibro(CreateLibroDto libroCreado)
         {
             var nuevoLibro = await _libroService.RegistrarLibroAsync(libroCreado);
             return CreatedAtAction(nameof(ObtenerLibros), new { id = nuevoLibro.LibroId }, nuevoLibro);
         }
 
         [HttpGet("{libroId}")]
-        public async Task<ActionResult<LibroResponseDto>> ObtenerLibroPorId(int libroId)
+        public async Task<ActionResult<LibroDto>> ObtenerLibroPorId(int libroId)
         {
             var libro = await _libroService.BuscarLibroPorIdAsync(libroId);
             if (libro == null) return NotFound($"No se encontró el libro con ID {libroId}");
@@ -39,7 +39,7 @@ namespace Biblioteca.API.Controllers
         }
 
         [HttpPut("{libroId}")]
-        public async Task<IActionResult> ActualizarLibro(int libroId, LibroCreateDto datosActualizados)
+        public async Task<IActionResult> ActualizarLibro(int libroId, UpdateLibroDto datosActualizados)
         {
             var libroActualizado = await _libroService.ModificarDatosLibroAsync(libroId, datosActualizados);
             if (!libroActualizado) return NotFound($"No se pudo actualizar porque el libro no existe");

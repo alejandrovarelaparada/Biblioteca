@@ -1,4 +1,4 @@
-﻿using Biblioteca.Application.DTOs;
+﻿using Biblioteca.Application.DTOs.Autores;
 using Biblioteca.Domain.Entities;
 using Biblioteca.Domain.Interfaces;
 
@@ -13,19 +13,35 @@ namespace Biblioteca.Application.Services
             _autorRepository = autorRepository;
         }
 
-        public async Task<IEnumerable<AutorResponseDto>> ListarAutoresAsync()
+        public async Task<IEnumerable<AutorDto>> ListarAutoresAsync()
         {
             var autores = await _autorRepository.ObtenerAutoresAsync();
 
-            return autores.Select(autor => new AutorResponseDto
-            {
-                AutorId = autor.Id,
-                Nombre = autor.Nombre,
-                Nacionalidad = autor.Nacionalidad
-            });
+            return autores.Select(autor => new AutorDto(
+                autor.Id,
+                autor.Nombre,
+                autor.Nacionalidad
+            ));
         }
 
-        public async Task<AutorResponseDto> RegistrarAutorAsync(AutorCreateDto autorCreado)
+        public async Task<AutorDto?> BuscarAutorPorIdAsync(int autorId)
+        {
+            var autor = await _autorRepository.ObtenerAutorPorIdAsync(autorId);
+            AutorDto? autorEncontrado = null;
+
+            if (autor != null)
+            {
+                autorEncontrado = new AutorDto(
+                    autor.Id,
+                    autor.Nombre,
+                    autor.Nacionalidad
+                );
+            }
+
+            return autorEncontrado;
+        }
+
+        public async Task<AutorDto> RegistrarAutorAsync(CreateAutorDto autorCreado)
         {
             var nuevoAutor = new Autor
             {
@@ -35,33 +51,10 @@ namespace Biblioteca.Application.Services
 
             await _autorRepository.InsertarNuevoAutorAsync(nuevoAutor);
 
-            return new AutorResponseDto
-            {
-                AutorId = nuevoAutor.Id,
-                Nombre = nuevoAutor.Nombre,
-                Nacionalidad = nuevoAutor.Nacionalidad
-            };
+            return new AutorDto(nuevoAutor.Id, nuevoAutor.Nombre, nuevoAutor.Nacionalidad); 
         }
 
-        public async Task<AutorResponseDto?> BuscarAutorPorIdAsync(int autorId)
-        {
-            var autor = await _autorRepository.ObtenerAutorPorIdAsync(autorId);
-            AutorResponseDto? autorEncontrado = null;
-
-            if (autor != null)
-            {
-                autorEncontrado = new AutorResponseDto
-                {
-                    AutorId = autor.Id,
-                    Nombre = autor.Nombre,
-                    Nacionalidad = autor.Nacionalidad
-                };
-            }
-
-            return autorEncontrado;
-        }
-
-        public async Task<bool> ModificarDatosAutorAsync(int autorId, AutorCreateDto datosNuevos)
+        public async Task<bool> ModificarDatosAutorAsync(int autorId, UpdateAutorDto datosNuevos)
         {
             var autorExistente = await _autorRepository.ObtenerAutorPorIdAsync(autorId);
             bool modificado = false;
