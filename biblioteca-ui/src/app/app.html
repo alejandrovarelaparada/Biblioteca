@@ -1,2 +1,27 @@
-<h1>Gestión de biblioteca</h1>
-<p>Lista de autores</p>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Biblioteca</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <button [class.active]="vistaActual() === 'autores'" (click)="cambiarVista('autores')">Autores</button>
+            <button [class.active]="vistaActual() === 'libros'" (click)="cambiarVista('libros')">Libros</button>
+            <button [class.active]="vistaActual() === 'ejemplares'"
+                (click)="cambiarVista('ejemplares')">Ejemplares</button>
+        </nav>
+    </aside>
+
+    <main class="container-contenido">
+        @if (vistaActual() === 'autores') {
+        <app-autores></app-autores>
+        }
+
+        @if(vistaActual() === 'libros'){
+        <app-libros></app-libros>
+        }
+
+        @if(vistaActual() === 'ejemplares'){
+        <app-ejemplares></app-ejemplares>
+        }
+    </main>
+</div>

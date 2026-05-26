@@ -1,0 +1,88 @@
+<div class="container-principal">
+    <h1>Gestión de Libros</h1>
+
+    <section class="form-crear-editar">
+        <h2>{{ idLibroEditando() !== null ? 'Editar Libro' : 'Añadir Nuevo Libro'}}</h2>
+
+        <form [formGroup]="formularioLibro" (ngSubmit)="guardarLibro()">
+            <div class="campos-input">
+                <input type="text" formControlName="titulo" placeholder="Título">
+                @if (formularioLibro.get('titulo')?.invalid && formularioLibro.get('titulo')?.touched){
+                <p class="error-input">El título es obligatorio</p>
+                }
+            </div>
+
+            <div class="campos-input">
+                <input type="text" formControlName="sinopsis" placeholder="Sinopsis">
+                @if (formularioLibro.get('sinopsis')?.invalid && formularioLibro.get('sinopsis')?.touched){
+                <p class="error-input">La sinopsis es obligatoria</p>
+                }
+            </div>
+
+            <div class="campos-input">
+                <select formControlName="autorId" class="select-opciones">
+                    <option value="" disable selected>Debe seleccionar un autor...</option>
+                    @for (autor of autores(); track autor.autorId) {
+                    <option [value]="autor.autorId">{{ autor.nombre }}</option>
+                    }
+                </select>
+                @if (formularioLibro.get('autorId')?.invalid && formularioLibro.get('autorId')?.touched){
+                <p class="error-input">Es obligatorio asignar un autor al libro</p>
+                }
+            </div>
+
+            <div class="button-group">
+                <button type="submit" [disabled]="formularioLibro.invalid">
+                    {{ idLibroEditando() !== null ? 'Actualizar' : 'Guardar' }}
+                </button>
+
+                @if(idLibroEditando() !== null){
+                <button type="button" class="btn-cancelar" (click)="cancelarEdicionLibro()">Cancelar</button>
+                }
+            </div>
+        </form>
+    </section>
+
+    @if(libros().length > 0){
+    <div class="container-busqueda">
+        <input type="text" placeholder="Buscar libro..." (input)="actualizarBusquedaLibro($event)"
+            [value]="tituloBusquedaLibro()" class="input-busqueda">
+    </div>
+    }
+
+    <h2>Listado de libros</h2>
+
+    <section class="container-tabla">
+        @if(librosFiltrados().length > 0){
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Sinopsis</th>
+                    <th>Autor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (libro of librosFiltrados(); track libro.libroId) {
+                <tr>
+                    <td>{{ libro.libroId }}</td>
+                    <td>{{ libro.titulo }}</td>
+                    <td>{{ libro.sinopsis }}</td>
+                    <td>{{ libro.autorNombre }}</td>
+                    <td class="acciones">
+                        <button (click)="seleccionarLibroParaEditar(libro)" class="btn-editar">Editar</button>
+                        <button (click)="eliminarLibro(libro.libroId)" class="btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        } @else if (libros().length > 0) {
+        <p class="mensaje-vacio">No se encontraron libros que coincidan con "{{ tituloBusquedaLibro() }}".</p>
+        } @else {
+        <p class="mensaje-vacio">No hay libros registrados todavía.</p>
+        }
+    </section>
+</div>

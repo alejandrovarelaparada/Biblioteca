@@ -1,0 +1,74 @@
+<div class="container-principal">
+    <h1>Gestión de Autores</h1>
+
+    <section class="form-crear-editar">
+        <h2>{{ idAutorEditando() !== null ? 'Editar Autor' : 'Añadir Nuevo Autor'}}</h2>
+
+        <form [formGroup]="formularioAutor" (ngSubmit)="guardarAutor()">
+            <div class="campos-input">
+                <input type="text" formControlName="nombre" placeholder="Nombre">
+                @if (formularioAutor.get('nombre')?.invalid && formularioAutor.get('nombre')?.touched){
+                <p class="error-input">El nombre es obligatorio</p>
+                }
+            </div>
+
+            <div class="campos-input">
+                <input type="text" formControlName="nacionalidad" placeholder="Nacionalidad">
+                @if (formularioAutor.get('nacionalidad')?.invalid && formularioAutor.get('nacionalidad')?.touched){
+                <p class="error-input">La nacionalidad es obligatoria</p>
+                }
+            </div>
+
+            <div class="button-group">
+                <button type="submit" [disabled]="formularioAutor.invalid">
+                    {{ idAutorEditando() !== null ? 'Actualizar' : 'Guardar' }}
+                </button>
+
+                @if(idAutorEditando() !== null){
+                <button type="button" class="btn-cancelar" (click)="cancelarEdicionAutor()">Cancelar</button>
+                }
+            </div>
+        </form>
+    </section>
+
+    @if(autores().length > 0){
+    <div class="container-busqueda">
+        <input type="text" placeholder="Buscar autor..." (input)="actualizarBusquedaAutor($event)" [value]="nombreBusquedaAutor()"
+            class="input-busqueda">
+    </div>
+    }
+
+    <h2>Listado de autores</h2>
+
+    <section class="container-tabla">
+        @if(autoresFiltrados().length > 0){
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Nacionalidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (autor of autoresFiltrados(); track autor.autorId) {
+                <tr>
+                    <td>{{ autor.autorId }}</td>
+                    <td>{{ autor.nombre }}</td>
+                    <td>{{ autor.nacionalidad }}</td>
+                    <td class="acciones">
+                        <button (click)="seleccionarAutorParaEditar(autor)" class="btn-editar">Editar</button>
+                        <button (click)="eliminarAutor(autor.autorId)" class="btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        } @else if (autores().length > 0) {
+        <p class="mensaje-vacio">No se encontraron autores que coincidan con "{{ nombreBusquedaAutor() }}".</p>
+        } @else {
+        <p class="mensaje-vacio">No hay autores registrados todavía.</p>
+        }
+    </section>
+</div>

@@ -1,0 +1,102 @@
+<div class="container-principal">
+    <h1>Gestión de Ejemplares</h1>
+
+    <section class="form-crear-editar">
+        <h2>{{ idEjemplarEditando() !== null ? 'Editar Ejemplar' : 'Añadir Nuevo Ejemplar'}}</h2>
+
+        <form [formGroup]="formularioEjemplar" (ngSubmit)="guardarEjemplar()">
+            <div class="campos-input">
+                <input type="text" formControlName="isbn" placeholder="ISBN">
+                @if (formularioEjemplar.get('isbn')?.invalid && formularioEjemplar.get('isbn')?.touched){
+                <p class="error-input">El ISBN es obligatorio</p>
+                }
+            </div>
+
+            <div class="campos-input">
+                <input type="number" formControlName="edicion" placeholder="Edición">
+                @if (formularioEjemplar.get('edicion')?.invalid && formularioEjemplar.get('edicion')?.touched){
+                <p class="error-input">La edición es obligatoria</p>
+                }
+            </div>
+
+            <div class="campos-input">
+                <select formControlName="estado" class="select-opciones">
+                    <option value="" disable selected>Estado del ejemplar...</option>
+                    @for (estado of listaEstados; track estado) {
+                    <option [value]="estado">{{ estado }}</option>
+                    }
+                </select>
+                @if (formularioEjemplar.get('estado')?.invalid && formularioEjemplar.get('estado')?.touched){
+                <p class="error-input">Es obligatorio asignar un estado al ejemplar</p>
+                }
+            </div>
+
+            <div class="campos-input">
+                <select formControlName="libroId" class="select-opciones">
+                    <option value="" disable selected>Debe seleccionar un libro...</option>
+                    @for (libro of libros(); track libro.libroId) {
+                    <option [value]="libro.libroId">{{ libro.titulo }}</option>
+                    }
+                </select>
+                @if (formularioEjemplar.get('libroId')?.invalid && formularioEjemplar.get('libroId')?.touched){
+                <p class="error-input">Es obligatorio asignar un libro al ejemplar</p>
+                }
+            </div>
+
+            <div class="button-group">
+                <button type="submit" [disabled]="formularioEjemplar.invalid">
+                    {{ idEjemplarEditando() !== null ? 'Actualizar' : 'Guardar' }}
+                </button>
+
+                @if(idEjemplarEditando() !== null){
+                <button type="button" class="btn-cancelar" (click)="cancelarEdicionEjemplar()">Cancelar</button>
+                }
+            </div>
+        </form>
+    </section>
+
+    @if(ejemplares().length > 0){
+    <div class="container-busqueda">
+        <input type="text" placeholder="Buscar ejemplar..." (input)="actualizarBusquedaEjemplar($event)"
+            [value]="terminoBusquedaEjemplar()" class="input-busqueda">
+    </div>
+    }
+
+    <h2>Listado de ejemplares</h2>
+
+    <section class="container-tabla">
+        @if(ejemplaresFiltrados().length > 0){
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ISBN</th>
+                    <th>Edición</th>
+                    <th>Estado</th>
+                    <th>Libro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (ejemplar of ejemplaresFiltrados(); track ejemplar.ejemplarId) {
+                <tr>
+                    <td>{{ ejemplar.ejemplarId }}</td>
+                    <td>{{ ejemplar.isbn }}</td>
+                    <td>{{ ejemplar.edicion }}</td>
+                    <td>{{ ejemplar.estado }}</td>
+                    <td>{{ ejemplar.libroTitulo }}</td>
+                    <td class="acciones">
+                        <button (click)="seleccionarEjemplarParaEditar(ejemplar)" class="btn-editar">Editar</button>
+                        <button (click)="eliminarEjemplar(ejemplar.ejemplarId)" class="btn-eliminar">Eliminar</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        } @else if (ejemplares().length > 0) {
+        <p class="mensaje-vacio">No se encontraron ejemplares que coincidan con "{{ terminoBusquedaEjemplar() }}".</p>
+        } @else {
+        <p class="mensaje-vacio">No hay ejemplares registrados todavía.</p>
+        }
+    </section>
+</div>

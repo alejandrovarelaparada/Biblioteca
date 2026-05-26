@@ -1,0 +1,112 @@
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { AutorService } from '../../services/autor.service';
+import { Autor } from '../../models/autor.model';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-autores',
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './autores.html',
+  styleUrl: './autores.css',
+})
+export class Autores implements OnInit{
+  private autorService = inject(AutorService);
+
+  public autores = signal<Autor[]>([]);
+  public idAutorEditando = signal<number | null>(null);
+  public nombreBusquedaAutor = signal<string>('');
+
+  public formularioAutor = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    nacionalidad: new FormControl('', [Validators.required])
+  });
+
+  public autoresFiltrados = computed(() => {
+    const nombre = this.nombreBusquedaAutor().toLowerCase().trim();
+
+    if(!nombre) return this.autores();
+
+    return this.autores().filter(autor =>
+      autor.nombre.toLowerCase().includes(nombre)
+    );
+  });
+
+  ngOnInit(){
+    this.obtenerAutores();
+  }
+
+  obtenerAutores(){
+    this.autorService.listarAutores().subscribe({
+      next: (data) => this.autores.set(data),
+      error: (err) => console.error('Error al conectar con la API:', err)
+    });
+  }
+
+  actualizarBusquedaAutor(event: Event){
+    const elemento = event.target as HTMLInputElement;
+    this.nombreBusquedaAutor.set(elemento.value);
+  }
+
+  seleccionarAutorParaEditar(autor: Autor){
+    this.idAutorEditando.set(autor.autorId);
+    this.formularioAutor.patchValue({
+      nombre: autor.nombre,
+      nacionalidad: autor.nacionalidad
+    });
+  }
+
+  cancelarEdicionAutor(){
+    this.idAutorEditando.set(null);
+    this.formularioAutor.reset();
+  }
+
+  guardarAutor(){
+    if (this.formularioAutor.invalid) return;
+
+    const idEditando = this.idAutorEditando();
+
+    if(idEditando !== null){
+      const autorEditado: Autor = {
+        autorId: idEditando,
+        nombre: this.formularioAutor.value.nombre!,
+        nacionalidad: this.formularioAutor.value.nacionalidad!
+      };
+
+      this.autorService.actualizarAutor(autorEditado).subscribe({
+        next: () => {
+        this.autores.update(lista =>
+          lista.map(autor => autor.autorId === idEditando ? autorEditado : autor)
+        );
+        this.cancelarEdicionAutor();
+        console.log('Autor actualizado con éxito');
+      },
+      error: (err) => console.error('Error al actualizar:', err)
+      });
+    }
+    else{
+      const nuevoAutor = this.formularioAutor.value as Autor;
+
+      this.autorService.insertarAutor(nuevoAutor).subscribe({
+        next: (autorCreado) => {
+          this.autores. update(lista => [...lista, autorCreado]);
+          this.formularioAutor.reset();
+          console.log('Autor guardado con éxito');
+        },
+        error: (err) => console.error('Error al guardar el autor:', err)
+      });
+    }
+  }
+
+  eliminarAutor(id: number){
+    if (confirm('¿Estás seguro de que deseas eliminar este autor?')) {
+      this.autorService.eliminarAutor(id).subscribe({
+        next: () => {
+          this.autores.update(lista => lista.filter(autor => autor.autorId !== id));
+          console.log('Autor con ID ${id} eliminado correctamente');
+        },
+        error: (err) => console.error('Error al intentar eliminar el autor:', err)        
+      });
+    }
+  }
+}
