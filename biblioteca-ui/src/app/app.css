@@ -33,22 +33,33 @@
 }
 
 .sidebar-nav button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9.6px;
+    padding: 12px 19.2px;
+    cursor: pointer;
     background: none;
     border: none;
-    color: #94a3b8;
-    text-align: left;
-    padding: 16px 24px;
     font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    border-radius: 0px;
+    font-weight: 500;
     transition: all 0.2s ease;
-    box-sizing: border-box;
 }
 
-.sidebar-nav button:hover {
+.sidebar-nav button .nav-icono{
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.sidebar-nav button:hover{
     background-color: #334155;
     color: #f8fafc;
+}
+
+.sidebar-nav button:hover .nav-icono{
+    transform: scale(1.08);
 }
 
 .sidebar-nav button:active {

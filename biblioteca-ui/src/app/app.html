@@ -4,10 +4,13 @@
             <h2>Biblioteca</h2>
         </div>
         <nav class="sidebar-nav">
-            <button [class.active]="vistaActual() === 'autores'" (click)="cambiarVista('autores')">Autores</button>
-            <button [class.active]="vistaActual() === 'libros'" (click)="cambiarVista('libros')">Libros</button>
+            <button [class.active]="vistaActual() === 'autores'" (click)="cambiarVista('autores')">
+                <img src="icons/autores.svg" alt="Icono Autores" class="nav-icono">Autores</button>
+            <button [class.active]="vistaActual() === 'libros'" (click)="cambiarVista('libros')">
+                <img src="icons/libros.svg" alt="Icono Libros" class="nav-icono">Libros</button>
             <button [class.active]="vistaActual() === 'ejemplares'"
-                (click)="cambiarVista('ejemplares')">Ejemplares</button>
+                (click)="cambiarVista('ejemplares')">
+                <img src="icons/ejemplares.svg" alt="Icono Ejemplares" class="nav-icono">Ejemplares</button>
         </nav>
     </aside>
 
