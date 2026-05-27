@@ -21,6 +21,7 @@ export class Ejemplares implements OnInit {
 
   public idEjemplarEditando = signal<number | null>(null);
   public terminoBusquedaEjemplar = signal<string>('');
+  public mostrarForm = signal<boolean>(false);
 
   public formularioEjemplar = new FormGroup({
     isbn: new FormControl('', [Validators.required]),
@@ -42,7 +43,7 @@ export class Ejemplares implements OnInit {
     });
 
     if (!termino) return mapeados;
-    return mapeados.filter(ejemplar => 
+    return mapeados.filter(ejemplar =>
       ejemplar.isbn.toLowerCase().includes(termino) ||
       ejemplar.libroTitulo.toLowerCase().includes(termino)
     );
@@ -51,6 +52,14 @@ export class Ejemplares implements OnInit {
   ngOnInit() {
     this.obtenerLibros();
     this.obtenerEjemplares();
+  }
+
+  abrirForm() {
+    this.idEjemplarEditando.set(null);
+    this.formularioEjemplar.reset();
+    this.formularioEjemplar.get('libroId')?.setValue('');
+    this.formularioEjemplar.get('estado')?.setValue('');
+    this.mostrarForm.set(true);
   }
 
   obtenerLibros() {
@@ -79,6 +88,7 @@ export class Ejemplares implements OnInit {
       estado: ejemplar.estado,
       libroId: ejemplar.libroId.toString()
     });
+    this.mostrarForm.set(true);
   }
 
   cancelarEdicionEjemplar() {
@@ -86,6 +96,7 @@ export class Ejemplares implements OnInit {
     this.formularioEjemplar.reset();
     this.formularioEjemplar.get('libroId')?.setValue('');
     this.formularioEjemplar.get('estado')?.setValue('');
+    this.mostrarForm.set(false);
   }
 
   guardarEjemplar() {

@@ -21,6 +21,7 @@ export class Libros implements OnInit {
 
   public idLibroEditando = signal<number | null>(null);
   public tituloBusquedaLibro = signal<string>('');
+  public mostrarForm = signal<boolean>(false);
 
   public formularioLibro = new FormGroup({
     titulo: new FormControl('', [Validators.required]),
@@ -45,6 +46,13 @@ export class Libros implements OnInit {
   ngOnInit() {
     this.obtenerAutores();
     this.obtenerLibros();
+  }
+
+  abrirForm() {
+    this.idLibroEditando.set(null);
+    this.formularioLibro.reset();
+    this.formularioLibro.get('autorId')?.setValue('');
+    this.mostrarForm.set(true);
   }
 
   obtenerAutores() {
@@ -72,12 +80,14 @@ export class Libros implements OnInit {
       sinopsis: libro.sinopsis,
       autorId: libro.autorId.toString()
     });
+    this.mostrarForm.set(true);
   }
 
   cancelarEdicionLibro() {
     this.idLibroEditando.set(null);
     this.formularioLibro.reset();
     this.formularioLibro.get('autorId')?.setValue('');
+    this.mostrarForm.set(false);
   }
 
   guardarLibro() {

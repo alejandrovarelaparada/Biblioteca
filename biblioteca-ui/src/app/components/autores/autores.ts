@@ -10,12 +10,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './autores.html',
   styleUrl: './autores.css',
 })
-export class Autores implements OnInit{
+export class Autores implements OnInit {
   private autorService = inject(AutorService);
 
   public autores = signal<Autor[]>([]);
+
   public idAutorEditando = signal<number | null>(null);
   public nombreBusquedaAutor = signal<string>('');
+  public mostrarForm = signal<boolean>(false);
 
   public formularioAutor = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
@@ -25,48 +27,56 @@ export class Autores implements OnInit{
   public autoresFiltrados = computed(() => {
     const nombre = this.nombreBusquedaAutor().toLowerCase().trim();
 
-    if(!nombre) return this.autores();
+    if (!nombre) return this.autores();
 
     return this.autores().filter(autor =>
       autor.nombre.toLowerCase().includes(nombre)
     );
   });
 
-  ngOnInit(){
+  ngOnInit() {
     this.obtenerAutores();
   }
 
-  obtenerAutores(){
+  abrirForm() {
+    this.idAutorEditando.set(null);
+    this.formularioAutor.reset();
+    this.mostrarForm.set(true);
+  }
+
+  obtenerAutores() {
     this.autorService.listarAutores().subscribe({
       next: (data) => this.autores.set(data),
       error: (err) => console.error('Error al conectar con la API:', err)
     });
   }
 
-  actualizarBusquedaAutor(event: Event){
+  actualizarBusquedaAutor(event: Event) {
     const elemento = event.target as HTMLInputElement;
     this.nombreBusquedaAutor.set(elemento.value);
   }
 
-  seleccionarAutorParaEditar(autor: Autor){
+  seleccionarAutorParaEditar(autor: Autor) {
     this.idAutorEditando.set(autor.autorId);
     this.formularioAutor.patchValue({
       nombre: autor.nombre,
       nacionalidad: autor.nacionalidad
     });
+    this.mostrarForm.set(true);
   }
 
-  cancelarEdicionAutor(){
+  cancelarEdicionAutor() {
     this.idAutorEditando.set(null);
     this.formularioAutor.reset();
+    this.mostrarForm.set(false);
   }
 
-  guardarAutor(){
+  guardarAutor() {
     if (this.formularioAutor.invalid) return;
 
     const idEditando = this.idAutorEditando();
 
-    if(idEditando !== null){
+    if (idEditando !== null) {
       const autorEditado: Autor = {
         autorId: idEditando,
         nombre: this.formularioAutor.value.nombre!,
@@ -75,21 +85,21 @@ export class Autores implements OnInit{
 
       this.autorService.actualizarAutor(autorEditado).subscribe({
         next: () => {
-        this.autores.update(lista =>
-          lista.map(autor => autor.autorId === idEditando ? autorEditado : autor)
-        );
-        this.cancelarEdicionAutor();
-        console.log('Autor actualizado con éxito');
-      },
-      error: (err) => console.error('Error al actualizar:', err)
+          this.autores.update(lista =>
+            lista.map(autor => autor.autorId === idEditando ? autorEditado : autor)
+          );
+          this.cancelarEdicionAutor();
+          console.log('Autor actualizado con éxito');
+        },
+        error: (err) => console.error('Error al actualizar:', err)
       });
     }
-    else{
+    else {
       const nuevoAutor = this.formularioAutor.value as Autor;
 
       this.autorService.insertarAutor(nuevoAutor).subscribe({
         next: (autorCreado) => {
-          this.autores. update(lista => [...lista, autorCreado]);
+          this.autores.update(lista => [...lista, autorCreado]);
           this.formularioAutor.reset();
           console.log('Autor guardado con éxito');
         },
@@ -98,14 +108,14 @@ export class Autores implements OnInit{
     }
   }
 
-  eliminarAutor(id: number){
+  eliminarAutor(id: number) {
     if (confirm('¿Estás seguro de que deseas eliminar este autor?')) {
       this.autorService.eliminarAutor(id).subscribe({
         next: () => {
           this.autores.update(lista => lista.filter(autor => autor.autorId !== id));
           console.log('Autor con ID ${id} eliminado correctamente');
         },
-        error: (err) => console.error('Error al intentar eliminar el autor:', err)        
+        error: (err) => console.error('Error al intentar eliminar el autor:', err)
       });
     }
   }

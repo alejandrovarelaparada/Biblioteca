@@ -1,64 +1,75 @@
 <div class="container-principal">
     <h1>Gestión de Ejemplares</h1>
 
-    <section class="form-crear-editar">
-        <h2>{{ idEjemplarEditando() !== null ? 'Editar Ejemplar' : 'Añadir Nuevo Ejemplar'}}</h2>
+    <div class="barra-accion">
+        @if(ejemplares().length > 0){
+        <div class="container-busqueda">
+            <input type="text" placeholder="Buscar ejemplar por ISBN o título..."
+                (input)="actualizarBusquedaEjemplar($event)" [value]="terminoBusquedaEjemplar()" class="input-busqueda">
+        </div>
+        }
+        <button class="btn-crear" (click)="abrirForm()">Añadir Ejemplar</button>
+    </div>
 
-        <form [formGroup]="formularioEjemplar" (ngSubmit)="guardarEjemplar()">
-            <div class="campos-input">
-                <input type="text" formControlName="isbn" placeholder="ISBN">
-                @if (formularioEjemplar.get('isbn')?.invalid && formularioEjemplar.get('isbn')?.touched){
-                <p class="error-input">El ISBN es obligatorio</p>
-                }
-            </div>
+    @if(mostrarForm()){
+    <div class="form-overlay" (click)="cancelarEdicionEjemplar()">
+        <div class="contenido-form" (click)="$event.stopPropagation()">
+            <button type="button" class="cerrar-form" (click)="cancelarEdicionEjemplar()">&times;</button>
 
-            <div class="campos-input">
-                <input type="number" formControlName="edicion" placeholder="Edición">
-                @if (formularioEjemplar.get('edicion')?.invalid && formularioEjemplar.get('edicion')?.touched){
-                <p class="error-input">La edición es obligatoria</p>
-                }
-            </div>
+            <section class="form-crear-editar">
+                <h2>{{ idEjemplarEditando() !== null ? 'Editar Ejemplar' : 'Añadir Nuevo Ejemplar'}}</h2>
 
-            <div class="campos-input">
-                <select formControlName="estado" class="select-opciones">
-                    <option value="" disable selected>Estado del ejemplar...</option>
-                    @for (estado of listaEstados; track estado) {
-                    <option [value]="estado">{{ estado }}</option>
-                    }
-                </select>
-                @if (formularioEjemplar.get('estado')?.invalid && formularioEjemplar.get('estado')?.touched){
-                <p class="error-input">Es obligatorio asignar un estado al ejemplar</p>
-                }
-            </div>
+                <form [formGroup]="formularioEjemplar" (ngSubmit)="guardarEjemplar()">
+                    <div class="campos-input">
+                        <input type="text" formControlName="isbn" placeholder="ISBN">
+                        @if (formularioEjemplar.get('isbn')?.invalid && formularioEjemplar.get('isbn')?.touched){
+                        <p class="error-input">El ISBN es obligatorio</p>
+                        }
+                    </div>
 
-            <div class="campos-input">
-                <select formControlName="libroId" class="select-opciones">
-                    <option value="" disable selected>Debe seleccionar un libro...</option>
-                    @for (libro of libros(); track libro.libroId) {
-                    <option [value]="libro.libroId">{{ libro.titulo }}</option>
-                    }
-                </select>
-                @if (formularioEjemplar.get('libroId')?.invalid && formularioEjemplar.get('libroId')?.touched){
-                <p class="error-input">Es obligatorio asignar un libro al ejemplar</p>
-                }
-            </div>
+                    <div class="campos-input">
+                        <input type="number" formControlName="edicion" placeholder="Edición">
+                        @if (formularioEjemplar.get('edicion')?.invalid && formularioEjemplar.get('edicion')?.touched){
+                        <p class="error-input">La edición es obligatoria</p>
+                        }
+                    </div>
 
-            <div class="button-group">
-                <button type="submit" [disabled]="formularioEjemplar.invalid">
-                    {{ idEjemplarEditando() !== null ? 'Actualizar' : 'Guardar' }}
-                </button>
+                    <div class="campos-input">
+                        <select formControlName="estado" class="select-opciones">
+                            <option value="" disable selected>Estado del ejemplar...</option>
+                            @for (estado of listaEstados; track estado) {
+                            <option [value]="estado">{{ estado }}</option>
+                            }
+                        </select>
+                        @if (formularioEjemplar.get('estado')?.invalid && formularioEjemplar.get('estado')?.touched){
+                        <p class="error-input">Es obligatorio asignar un estado al ejemplar</p>
+                        }
+                    </div>
 
-                @if(idEjemplarEditando() !== null){
-                <button type="button" class="btn-cancelar" (click)="cancelarEdicionEjemplar()">Cancelar</button>
-                }
-            </div>
-        </form>
-    </section>
+                    <div class="campos-input">
+                        <select formControlName="libroId" class="select-opciones">
+                            <option value="" disable selected>Debe seleccionar un libro...</option>
+                            @for (libro of libros(); track libro.libroId) {
+                            <option [value]="libro.libroId">{{ libro.titulo }}</option>
+                            }
+                        </select>
+                        @if (formularioEjemplar.get('libroId')?.invalid && formularioEjemplar.get('libroId')?.touched){
+                        <p class="error-input">Es obligatorio asignar un libro al ejemplar</p>
+                        }
+                    </div>
 
-    @if(ejemplares().length > 0){
-    <div class="container-busqueda">
-        <input type="text" placeholder="Buscar ejemplar..." (input)="actualizarBusquedaEjemplar($event)"
-            [value]="terminoBusquedaEjemplar()" class="input-busqueda">
+                    <div class="button-group">
+                        <button type="submit" [disabled]="formularioEjemplar.invalid">
+                            {{ idEjemplarEditando() !== null ? 'Actualizar' : 'Guardar' }}
+                        </button>
+
+                        @if(idEjemplarEditando() !== null){
+                        <button type="button" class="btn-cancelar" (click)="cancelarEdicionEjemplar()">Cancelar</button>
+                        }
+                    </div>
+                </form>
+            </section>
+        </div>
     </div>
     }
 

@@ -1,52 +1,63 @@
 <div class="container-principal">
     <h1>Gestión de Libros</h1>
 
-    <section class="form-crear-editar">
-        <h2>{{ idLibroEditando() !== null ? 'Editar Libro' : 'Añadir Nuevo Libro'}}</h2>
+    <div class="barra-accion">
+        @if(libros().length > 0){
+        <div class="container-busqueda">
+            <input type="text" placeholder="Buscar libro por título..." (input)="actualizarBusquedaLibro($event)"
+                [value]="tituloBusquedaLibro()" class="input-busqueda">
+        </div>
+        }
+        <button class="btn-crear" (click)="abrirForm()">Añadir Libro</button>
+    </div>
 
-        <form [formGroup]="formularioLibro" (ngSubmit)="guardarLibro()">
-            <div class="campos-input">
-                <input type="text" formControlName="titulo" placeholder="Título">
-                @if (formularioLibro.get('titulo')?.invalid && formularioLibro.get('titulo')?.touched){
-                <p class="error-input">El título es obligatorio</p>
-                }
-            </div>
+    @if(mostrarForm()){
+    <div class="form-overlay" (click)="cancelarEdicionLibro()">
+        <div class="contenido-form" (click)="$event.stopPropagation()">
+            <button type="button" class="cerrar-form" (click)="cancelarEdicionLibro()">&times;</button>
 
-            <div class="campos-input">
-                <input type="text" formControlName="sinopsis" placeholder="Sinopsis">
-                @if (formularioLibro.get('sinopsis')?.invalid && formularioLibro.get('sinopsis')?.touched){
-                <p class="error-input">La sinopsis es obligatoria</p>
-                }
-            </div>
+            <section class="form-crear-editar">
+                <h2>{{ idLibroEditando() !== null ? 'Editar Libro' : 'Añadir Nuevo Libro'}}</h2>
 
-            <div class="campos-input">
-                <select formControlName="autorId" class="select-opciones">
-                    <option value="" disable selected>Debe seleccionar un autor...</option>
-                    @for (autor of autores(); track autor.autorId) {
-                    <option [value]="autor.autorId">{{ autor.nombre }}</option>
-                    }
-                </select>
-                @if (formularioLibro.get('autorId')?.invalid && formularioLibro.get('autorId')?.touched){
-                <p class="error-input">Es obligatorio asignar un autor al libro</p>
-                }
-            </div>
+                <form [formGroup]="formularioLibro" (ngSubmit)="guardarLibro()">
+                    <div class="campos-input">
+                        <input type="text" formControlName="titulo" placeholder="Título">
+                        @if (formularioLibro.get('titulo')?.invalid && formularioLibro.get('titulo')?.touched){
+                        <p class="error-input">El título es obligatorio</p>
+                        }
+                    </div>
 
-            <div class="button-group">
-                <button type="submit" [disabled]="formularioLibro.invalid">
-                    {{ idLibroEditando() !== null ? 'Actualizar' : 'Guardar' }}
-                </button>
+                    <div class="campos-input">
+                        <input type="text" formControlName="sinopsis" placeholder="Sinopsis">
+                        @if (formularioLibro.get('sinopsis')?.invalid && formularioLibro.get('sinopsis')?.touched){
+                        <p class="error-input">La sinopsis es obligatoria</p>
+                        }
+                    </div>
 
-                @if(idLibroEditando() !== null){
-                <button type="button" class="btn-cancelar" (click)="cancelarEdicionLibro()">Cancelar</button>
-                }
-            </div>
-        </form>
-    </section>
+                    <div class="campos-input">
+                        <select formControlName="autorId" class="select-opciones">
+                            <option value="" disable selected>Debe seleccionar un autor...</option>
+                            @for (autor of autores(); track autor.autorId) {
+                            <option [value]="autor.autorId">{{ autor.nombre }}</option>
+                            }
+                        </select>
+                        @if (formularioLibro.get('autorId')?.invalid && formularioLibro.get('autorId')?.touched){
+                        <p class="error-input">Es obligatorio asignar un autor al libro</p>
+                        }
+                    </div>
 
-    @if(libros().length > 0){
-    <div class="container-busqueda">
-        <input type="text" placeholder="Buscar libro..." (input)="actualizarBusquedaLibro($event)"
-            [value]="tituloBusquedaLibro()" class="input-busqueda">
+                    <div class="button-group">
+                        <button type="submit" [disabled]="formularioLibro.invalid">
+                            {{ idLibroEditando() !== null ? 'Actualizar' : 'Guardar' }}
+                        </button>
+
+                        @if(idLibroEditando() !== null){
+                        <button type="button" class="btn-cancelar" (click)="cancelarEdicionLibro()">Cancelar</button>
+                        }
+                    </div>
+                </form>
+            </section>
+        </div>
     </div>
     }
 

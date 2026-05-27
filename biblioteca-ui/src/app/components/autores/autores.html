@@ -1,40 +1,52 @@
 <div class="container-principal">
     <h1>Gestión de Autores</h1>
 
-    <section class="form-crear-editar">
-        <h2>{{ idAutorEditando() !== null ? 'Editar Autor' : 'Añadir Nuevo Autor'}}</h2>
+    <div class="barra-accion">
+        @if(autores().length > 0){
+        <div class="container-busqueda">
+            <input type="text" placeholder="Buscar autor..." (input)="actualizarBusquedaAutor($event)"
+                [value]="nombreBusquedaAutor()" class="input-busqueda">
+        </div>
+        }
+        <button class="btn-crear" (click)="abrirForm()">Añadir Autor</button>
+    </div>
 
-        <form [formGroup]="formularioAutor" (ngSubmit)="guardarAutor()">
-            <div class="campos-input">
-                <input type="text" formControlName="nombre" placeholder="Nombre">
-                @if (formularioAutor.get('nombre')?.invalid && formularioAutor.get('nombre')?.touched){
-                <p class="error-input">El nombre es obligatorio</p>
-                }
-            </div>
+    @if(mostrarForm()){
+    <div class="form-overlay" (click)="cancelarEdicionAutor()">
+        <div class="contenido-form" (click)="$event.stopPropagation()">
+            <button type="button" class="cerrar-form" (click)="cancelarEdicionAutor()">&times;</button>
 
-            <div class="campos-input">
-                <input type="text" formControlName="nacionalidad" placeholder="Nacionalidad">
-                @if (formularioAutor.get('nacionalidad')?.invalid && formularioAutor.get('nacionalidad')?.touched){
-                <p class="error-input">La nacionalidad es obligatoria</p>
-                }
-            </div>
+            <section class="form-crear-editar">
+                <h2>{{ idAutorEditando() !== null ? 'Editar Autor' : 'Añadir Nuevo Autor'}}</h2>
 
-            <div class="button-group">
-                <button type="submit" [disabled]="formularioAutor.invalid">
-                    {{ idAutorEditando() !== null ? 'Actualizar' : 'Guardar' }}
-                </button>
+                <form [formGroup]="formularioAutor" (ngSubmit)="guardarAutor()">
+                    <div class="campos-input">
+                        <input type="text" formControlName="nombre" placeholder="Nombre">
+                        @if (formularioAutor.get('nombre')?.invalid && formularioAutor.get('nombre')?.touched){
+                        <p class="error-input">El nombre es obligatorio</p>
+                        }
+                    </div>
 
-                @if(idAutorEditando() !== null){
-                <button type="button" class="btn-cancelar" (click)="cancelarEdicionAutor()">Cancelar</button>
-                }
-            </div>
-        </form>
-    </section>
+                    <div class="campos-input">
+                        <input type="text" formControlName="nacionalidad" placeholder="Nacionalidad">
+                        @if (formularioAutor.get('nacionalidad')?.invalid &&
+                        formularioAutor.get('nacionalidad')?.touched){
+                        <p class="error-input">La nacionalidad es obligatoria</p>
+                        }
+                    </div>
 
-    @if(autores().length > 0){
-    <div class="container-busqueda">
-        <input type="text" placeholder="Buscar autor..." (input)="actualizarBusquedaAutor($event)" [value]="nombreBusquedaAutor()"
-            class="input-busqueda">
+                    <div class="button-group">
+                        <button type="submit" [disabled]="formularioAutor.invalid">
+                            {{ idAutorEditando() !== null ? 'Actualizar' : 'Guardar' }}
+                        </button>
+
+                        @if(idAutorEditando() !== null){
+                        <button type="button" class="btn-cancelar" (click)="cancelarEdicionAutor()">Cancelar</button>
+                        }
+                    </div>
+                </form>
+            </section>
+        </div>
     </div>
     }
 
