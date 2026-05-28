@@ -19,6 +19,9 @@ export class Autores implements OnInit {
   public nombreBusquedaAutor = signal<string>('');
   public mostrarForm = signal<boolean>(false);
 
+  public paginaActual = signal<number>(1);
+  public autoresPorPagina = signal<number>(10);
+
   public formularioAutor = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
     nacionalidad: new FormControl('', [Validators.required])
@@ -32,6 +35,17 @@ export class Autores implements OnInit {
     return this.autores().filter(autor =>
       autor.nombre.toLowerCase().includes(nombre)
     );
+  });
+
+  public totalAutores = computed(() => {
+    const totalItems = this.autoresFiltrados().length;
+    return Math.ceil(totalItems / this.autoresPorPagina());
+  });
+
+  public autoresPaginados = computed(() => {
+    const inicio = (this.paginaActual() - 1) * this.autoresPorPagina();
+    const fin = inicio + this.autoresPorPagina();
+    return this.autoresFiltrados().slice(inicio, fin);
   });
 
   ngOnInit() {
@@ -54,6 +68,7 @@ export class Autores implements OnInit {
   actualizarBusquedaAutor(event: Event) {
     const elemento = event.target as HTMLInputElement;
     this.nombreBusquedaAutor.set(elemento.value);
+    this.paginaActual.set(1);
   }
 
   seleccionarAutorParaEditar(autor: Autor) {
@@ -118,5 +133,21 @@ export class Autores implements OnInit {
         error: (err) => console.error('Error al intentar eliminar el autor:', err)
       });
     }
+  }
+
+  siguientePagina() {
+    if (this.paginaActual() < this.totalAutores()) {
+      this.paginaActual.update(p => p + 1);
+    }
+  }
+
+  paginaAnterior() {
+    if (this.paginaActual() > 1) {
+      this.paginaActual.update(p => p - 1);
+    }
+  }
+
+  irAPagina(pagina: number) {
+    this.paginaActual.set(pagina);
   }
 }

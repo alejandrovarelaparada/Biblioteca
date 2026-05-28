@@ -53,7 +53,7 @@
     <h2>Listado de autores</h2>
 
     <section class="container-tabla">
-        @if(autoresFiltrados().length > 0){
+        @if(autoresPaginados().length > 0){
         <table class="tabla">
             <thead>
                 <tr>
@@ -64,7 +64,7 @@
                 </tr>
             </thead>
             <tbody>
-                @for (autor of autoresFiltrados(); track autor.autorId) {
+                @for (autor of autoresPaginados(); track autor.autorId) {
                 <tr>
                     <td>{{ autor.autorId }}</td>
                     <td>{{ autor.nombre }}</td>
@@ -77,6 +77,16 @@
                 }
             </tbody>
         </table>
+
+        <div class="container-paginacion">
+            <button class="btn-cambiar-pagina" (click)="paginaAnterior()" [disabled]="paginaActual() === 1">Anterior</button>
+
+            <span class="info-pagina">
+                Página {{ paginaActual() }} de {{ totalAutores() }}
+            </span>
+
+            <button class="btn-cambiar-pagina" (click)="siguientePagina()" [disabled]="paginaActual() === totalAutores()">Siguiente</button>
+        </div>
         } @else if (autores().length > 0) {
         <p class="mensaje-vacio">No se encontraron autores que coincidan con "{{ nombreBusquedaAutor() }}".</p>
         } @else {

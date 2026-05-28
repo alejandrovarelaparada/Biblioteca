@@ -81,14 +81,30 @@ button:not(:disabled):hover {
     background-color: #0069d9;
 }
 
-.btn-eliminar { background-color: #dc3545; }
-.btn-eliminar:hover { background-color: #bd2130 !important; }
+.btn-eliminar {
+    background-color: #dc3545;
+}
 
-.btn-editar { background-color: #ffc107; color: #212529; }
-.btn-editar:hover { background-color: #e0a800 !important; }
+.btn-eliminar:hover {
+    background-color: #bd2130 !important;
+}
 
-.btn-cancelar { background-color: #6c757d; }
-.btn-cancelar:hover { background-color: #5a6268 !important; }
+.btn-editar {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-editar:hover {
+    background-color: #e0a800 !important;
+}
+
+.btn-cancelar {
+    background-color: #6c757d;
+}
+
+.btn-cancelar:hover {
+    background-color: #5a6268 !important;
+}
 
 .btn-crear {
     background-color: #28a745;
@@ -151,8 +167,13 @@ button:not(:disabled):hover {
     padding: 12px;
 }
 
-.tabla tr:nth-child(even) { background-color: #F9F9F9; }
-.tabla tr:hover { background-color: #F1F1F1; }
+.tabla tr:nth-child(even) {
+    background-color: #F9F9F9;
+}
+
+.tabla tr:hover {
+    background-color: #F1F1F1;
+}
 
 .container-busqueda {
     margin: 24px 0;
@@ -246,7 +267,7 @@ button:not(:disabled):hover {
 
 .contenido-form {
     background: white;
-    padding: 35px; 
+    padding: 35px;
     border-radius: 12px;
     width: 100%;
     max-width: 500px;
@@ -264,30 +285,30 @@ button:not(:disabled):hover {
 }
 
 .contenido-form .campos-input {
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
 
 .contenido-form .campos-input:last-of-type {
-    margin-bottom: 28px; 
+    margin-bottom: 28px;
 }
 
 .contenido-form .button-group {
     display: flex;
-    gap: 12px; 
+    gap: 12px;
     justify-content: flex-start;
 }
 
 .cerrar-form {
     position: absolute;
-    top: 19px; 
-    right: 19px; 
+    top: 19px;
+    right: 19px;
     background: none;
     border: none;
-    font-size: 26px; 
+    font-size: 26px;
     color: #94a3b8;
     cursor: pointer;
     line-height: 1;
-    padding: 4px; 
+    padding: 4px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -300,4 +321,19 @@ button:not(:disabled):hover {
 .cerrar-form:hover {
     background-color: #f1f5f9 !important;
     color: #ef4444;
+}
+
+.container-paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-top: 24px;
+    padding: 16px 0;    
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-cambiar-pagina{
+    font-size: 14.4px;
+    font-weight: 500;
 }
